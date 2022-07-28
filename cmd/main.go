@@ -8,6 +8,7 @@ import (
 
 func main() {
 	client := js8call.MakeTCPClient("localhost", "2442")
+  client.Debug = true
 	go client.Start()
 
 	for {

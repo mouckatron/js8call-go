@@ -6,6 +6,7 @@ import (
 
 	"errors"
 	"fmt"
+  "log"
 	"net"
 )
 
@@ -14,6 +15,7 @@ type TCPClient struct {
 	Port           string
 	MessageChannel chan interface{}
 	ErrorChannel   chan error
+  Debug          bool
 	client         net.Conn
 }
 
@@ -30,6 +32,7 @@ func MakeTCPClient(address string, port string) *TCPClient {
 		port,
 		messageChannel,
 		errorChannel,
+    false,
 		nil}
 
 	return tcpclient
@@ -46,7 +49,9 @@ func (client *TCPClient) Start() { //messageChannel chan interface{}, errorChann
 
 	for {
 		message, _ := bufio.NewReader((*client).client).ReadString('\n')
-
+    if client.Debug {
+      log.Println(message)
+    }
 		go client.parse(message)
 	}
 }
@@ -83,6 +88,12 @@ func (client *TCPClient) parse(message string) {
 
 	case "RIG.PTT":
 		var jsonMessage RigPTT
+		json.Unmarshal([]byte(message), &jsonMessage)
+		// log.Println(jsonMessage)
+		client.MessageChannel <- jsonMessage
+
+	case "RIG.FREQ":
+		var jsonMessage RigFreq
 		json.Unmarshal([]byte(message), &jsonMessage)
 		// log.Println(jsonMessage)
 		client.MessageChannel <- jsonMessage

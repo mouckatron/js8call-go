@@ -16,8 +16,21 @@ INBOX.MESSAGES
 INBOX.MESSAGE
 MODE.SPEED
 PING
-RIG.FREQ
 */
+
+/*
+RigFreq contains the specific RIG.FREQ message structure */
+type RigFreq struct {
+	Type   string `json:"type"`
+	Value  string `json:"value"`
+	Params struct {
+    BAND string `json:"BAND"`
+    DIAL int64 `json:"DIAL"`
+    FREQ int64 `json:"FREQ"`
+    OFFSET int `json:"OFFSET"`
+    ID int `json:"_ID"`
+  }
+}
 
 /*
 RigPTT contains the specific RIG.PTT message structure */
